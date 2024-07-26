@@ -3,16 +3,18 @@ import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 import { IconButton, Badge } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Dayjs } from 'dayjs';
+import { EventType } from '@/types/EventType';
 
 interface CustomPickersDayProps extends PickersDayProps<Dayjs> {
-  selectedDays: Dayjs[];
-  notifications: Record<string, number>;
+  selectedDays: EventType[];
+  //notifications: Record<string, number>;
 }
 
 const CustomPickersDay = (props: CustomPickersDayProps) => {
-  const { day, selectedDays, notifications, ...other } = props;
-  const isSelected = selectedDays.some(selectedDay => day.isSame(selectedDay, 'day'));
-  const notificationCount = notifications[day.format('YYYY-MM-DD')] || 0;
+  
+  const { day, selectedDays, ...other } = props;
+  const isSelected = selectedDays.some(selectedDay => day.isSame(selectedDay.start, 'day'));
+  const notificationCount = selectedDays.filter(selectedDay => day.isSame(selectedDay.start, 'day')).length;
 
   return (
     <Badge badgeContent={notificationCount} color="secondary">

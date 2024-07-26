@@ -12,6 +12,8 @@ import { TextField, Box } from '@mui/material';
 import { Dayjs } from 'dayjs';
 import {z} from 'zod';
 import ActionAlerts from './Alert';
+import {EventType} from "@/types/EventType"
+import { userId } from '@/api/helpers';
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -25,19 +27,19 @@ const Transition = React.forwardRef(function Transition(
 interface AddEventDialogProps {
   open: boolean;
   handleClose: () => void;
-  handleEventSubmit: (event: { start: Dayjs, end: Dayjs, title: string, description: string, userId: string }) => void;
+  handleEventSubmit: (event: EventType) => void;
   initialDate: Dayjs;
   alertProps: { success:boolean, message: string};
   setAlertProps: React.Dispatch<React.SetStateAction<{ success: boolean, message: string }>>
 }
 
 const ModalDialog: React.FC<AddEventDialogProps> = ({ open, handleClose, handleEventSubmit, initialDate, alertProps, setAlertProps }) => {
-  const [newEvent, setNewEvent] = React.useState({
-    start: initialDate,
-    end: initialDate,
-    title: '',
-    description: '',
-    userId:''
+  const [newEvent, setNewEvent] = React.useState<EventType>({
+    title:'',
+    description:'',
+    start: initialDate.toDate(),
+    end: initialDate.add(1,"hour").toDate(),
+    userId: parseInt(userId)
   });
 
   const handleEventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
