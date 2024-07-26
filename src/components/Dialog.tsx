@@ -10,6 +10,8 @@ import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import { TextField, Box } from '@mui/material';
 import { Dayjs } from 'dayjs';
+import {z} from 'zod';
+import ActionAlerts from './Alert';
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -23,16 +25,19 @@ const Transition = React.forwardRef(function Transition(
 interface AddEventDialogProps {
   open: boolean;
   handleClose: () => void;
-  handleEventSubmit: (event: { start: Dayjs, end: Dayjs, title: string, description: string }) => void;
+  handleEventSubmit: (event: { start: Dayjs, end: Dayjs, title: string, description: string, userId: string }) => void;
   initialDate: Dayjs;
+  alertProps: { success:boolean, message: string};
+  setAlertProps: React.Dispatch<React.SetStateAction<{ success: boolean, message: string }>>
 }
 
-const ModalDialog: React.FC<AddEventDialogProps> = ({ open, handleClose, handleEventSubmit, initialDate }) => {
+const ModalDialog: React.FC<AddEventDialogProps> = ({ open, handleClose, handleEventSubmit, initialDate, alertProps, setAlertProps }) => {
   const [newEvent, setNewEvent] = React.useState({
     start: initialDate,
     end: initialDate,
     title: '',
-    description: ''
+    description: '',
+    userId:''
   });
 
   const handleEventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,9 +47,25 @@ const ModalDialog: React.FC<AddEventDialogProps> = ({ open, handleClose, handleE
 
   const handleSubmit = () => {
     debugger;
-    handleEventSubmit(newEvent);
-    handleClose();
+    handleEventSubmit(newEvent);    
   };
+
+  const createEventForm = z.object({
+    title: z.string().max(15).min(5),
+    description: z.string().max(40).optional(),
+    start: z.date(),
+    end: z.date(),
+    userId: z.number()
+  })
+
+    React.useEffect(() => {
+        if (alertProps) {
+        const timer = setTimeout(() => {
+            setAlertProps({success:alertProps.success, message:alertProps.message});
+        }, 6000);
+        return () => clearTimeout(timer);
+        }
+    }, [alertProps, setAlertProps]);
 
   return (
     <Dialog
@@ -93,6 +114,16 @@ const ModalDialog: React.FC<AddEventDialogProps> = ({ open, handleClose, handleE
             onChange={handleEventChange}
             InputLabelProps={{ shrink: true }}
           />
+
+            {
+                alertProps.message !== "" && 
+                <ActionAlerts 
+                    success={alertProps?.success ?? false}
+                    message={alertProps?.message ?? ""}
+                />
+            }
+
+          
         </Box>
       </DialogContent>
       <DialogActions>
