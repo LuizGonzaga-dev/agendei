@@ -11,6 +11,7 @@ import { jwtToken, userId } from '@/api/helpers';
 import { EventType } from '@/types/EventType';
 import DayEvents from './DayEvents';
 import { thereAreEventsOnDay, filterEventsByDay } from '@/helpers/Filters';
+import { Backdrop } from '@mui/material';
 
 
 const Calendar = () => {
@@ -21,13 +22,15 @@ const Calendar = () => {
     const [initialDate, setInitialDate] = useState(dayjs());
     const [alertProps, setAlertProps] = useState<{success:boolean, message: string} >({success:false,message:""});
     const [eventByDay, setEventsByDay] = useState<EventType[]>([]);
+    const [showBackDrop, setShowBackDrop] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchEvents = async () => {
-          const events = await getEvents(userId); 
-          setSelectedDates(events);
+            setShowBackDrop(true);
+            const events = await getEvents(userId); 
+            setSelectedDates(events);            
+            setShowBackDrop(false);
         };
-    
         fetchEvents();
     }, []);
 
@@ -63,10 +66,10 @@ const Calendar = () => {
         if (date) {
         
             if( selectedDates.length != 0 && thereAreEventsOnDay({allEvents:selectedDates, day:date})){
-                setEventsByDay(filterEventsByDay({allEvents: selectedDates, day:date}));
+                setEventsByDay(filterEventsByDay({allEvents: selectedDates, day:date}));                
             }else{
                 setOpen(true);
-            }
+            }            
         }
     };
 
@@ -84,7 +87,7 @@ const Calendar = () => {
             setAlertProps({success:true, message: response.data.message})
         }else{
             setAlertProps({success:false, message: response.data.message})
-        }
+        }        
     };
 
     return (
@@ -92,7 +95,7 @@ const Calendar = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <StaticDatePicker 
                     orientation="portrait"
-                    value={dayjs()}
+                    value={value}
                     onChange={handleDateChange}
                     
                     slots={{
@@ -111,6 +114,9 @@ const Calendar = () => {
             </LocalizationProvider>
             <DayEvents 
                 eventsToShow={eventByDay}
+            />
+            <Backdrop
+                open={showBackDrop}
             />
         </>
     );
