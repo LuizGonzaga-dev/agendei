@@ -6,12 +6,15 @@ import { z } from 'zod';
 import { TextField } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
 import ButtonEnviar from '../buttons/ButtonEnviar';
+import DynamicAlert from '../Alert';
+import {EventResponseViewModel} from '@/Interfaces/ResponseAgendaController';
+import dayjs from 'dayjs';
 
 type props = {
     event: EventType | undefined;
-    open: boolean;
+    open: {open: boolean, success: boolean, message: string, create: boolean};
     handleClose: () => void;
-    handleEventSubmit: (event: EventType) => void;
+    handleEventSubmit: (event: EventType) => Promise<EventResponseViewModel>;
 }
 
 const eventTypeFormSchema = z.object({
@@ -20,11 +23,25 @@ const eventTypeFormSchema = z.object({
     start: z.date({required_error:"Obrigatório!"}),
     end: z.date({required_error: "Obrigatório!"}),
     eventId: z.number()
-})
+});
 
 const ModalCreateEdit = (params: props) => {
 
-    const {open, event, handleClose, handleEventSubmit} = params;
+    const {open, handleClose, handleEventSubmit} = params;
+    let {event} = params;
+
+    if (open.create) {
+        debugger
+        event = {
+            title: '',
+            description: '',
+            start: dayjs().toDate(),
+            end: dayjs().add(1, 'hour').toDate(),
+        };
+    }else{
+        debugger
+    }
+
     const {
         handleSubmit, 
         control,
@@ -35,10 +52,10 @@ const ModalCreateEdit = (params: props) => {
         defaultValues: event 
     });
 
-    const onSubmit: SubmitHandler<EventType> = (data) =>{
-        handleEventSubmit(data);
+    const onSubmit: SubmitHandler<EventType> = async (data) => {
+        const result = await handleEventSubmit(data);        
         handleClose();
-    }
+    };
 
     useEffect(() => {
         if (event) {
@@ -50,15 +67,15 @@ const ModalCreateEdit = (params: props) => {
                 eventId: event.eventId
             });
         }
-    }, [event, reset]);
+    }, [open, reset]);
 
     return (
         <Dialog 
-            open={open}
+            open={open.open}
             onClose={handleClose}
         >
             <DialogTitle className='font-bold'>
-                `${event === undefined ? "Criar" : "Editar"} evento!`
+                {open.create ? "Criar " : "Editar "}evento!
             </DialogTitle>
             <Divider variant='fullWidth'/>
             <DialogContent>
@@ -100,11 +117,10 @@ const ModalCreateEdit = (params: props) => {
                                     {...field}
                                     label="inicio"
                                     type="datetime-local"
-                                    name="end"
                                     fullWidth
                                     margin="normal"
-                                    value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ''}
-                                    onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : '')}
+                                    value={field.value ? dayjs(field.value).format('YYYY-MM-DDTHH:mm') : dayjs().format('YYYY-MM-DDTHH:mm')}
+                                    onChange={(e) => field.onChange(dayjs(e.target.value).toDate())}
                                     InputLabelProps={{ shrink: true }}
                                 />
                             }
@@ -117,11 +133,10 @@ const ModalCreateEdit = (params: props) => {
                                     {...field}
                                     label="Fim"
                                     type="datetime-local"
-                                    name="end"
                                     fullWidth
                                     margin="normal"
-                                    value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ''}
-                                    onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : '')}
+                                    value={field.value ? dayjs(field.value).format('YYYY-MM-DDTHH:mm') : dayjs().add(1,'hour').format('YYYY-MM-DDTHH:mm')}
+                                    onChange={(e) => field.onChange(dayjs(e.target.value).toDate())}
                                     InputLabelProps={{ shrink: true }}
                                 />
                             }
@@ -143,6 +158,13 @@ const ModalCreateEdit = (params: props) => {
                             }
                         /> 
                     </span>
+                    
+                    <DynamicAlert 
+                        show={open.open && open.message !== ''}
+                        success={open?.success ?? false}
+                        message={open?.message ?? ""}
+                    />
+
                     <ButtonEnviar isSubmitting={isSubmitting}/>
                 </form>
             </DialogContent>

@@ -3,32 +3,31 @@
 import React, {useState} from 'react';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import { Check, Error } from '@mui/icons-material';
 
-export default function ActionAlerts(alertProps : {success:boolean, message:string}) {
+export default function DynamicAlert(alertProps : {show : boolean, success:boolean, message:string}) {
 
-    const {success, message} = alertProps;
-    const [open, setOpen] = useState<boolean>(true);
+    let {success, message, show} = alertProps;
 
-    const handleClose = () => {setOpen(false)}
+    const handleClose = () => show = false;
 
     return (
-        <Stack sx={{ width: '100%' }} spacing={2}>
-
+        <>
             {
-                open && (
-                    success ? 
-                    (
-                        <Alert severity="success" onClose={handleClose}>
-                            {message}
-                        </Alert>
-                    ) : 
-                    (
-                        <Alert severity="error" onClose={handleClose}>
-                            {message}
-                        </Alert>
-                    )
-                )
+                show &&
+                
+                <Stack sx={{ width: '100%' }} spacing={2}>
+                    <Alert
+                        onClose={handleClose}
+                        variant='filled'
+                        severity={success ? 'success' : 'error'}
+                        icon={success ? <Check/> : <Error/>}
+                    >
+                        {message}
+                    </Alert>
+                </Stack>
+
             }
-        </Stack>
+        </>
     );
 }

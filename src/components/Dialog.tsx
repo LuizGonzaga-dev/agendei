@@ -11,7 +11,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { TextField, Box } from '@mui/material';
 import { Dayjs } from 'dayjs';
 import {z} from 'zod';
-import ActionAlerts from './Alert';
+import DynamicAlert from './Alert';
 import {EventType} from "@/types/EventType"
 import { userId } from '@/api/helpers';
 
@@ -48,7 +48,6 @@ const ModalDialog: React.FC<AddEventDialogProps> = ({ open, handleClose, handleE
   };
 
   const handleSubmit = () => {
-    debugger;
     handleEventSubmit(newEvent);    
   };
 
@@ -117,13 +116,13 @@ const ModalDialog: React.FC<AddEventDialogProps> = ({ open, handleClose, handleE
             InputLabelProps={{ shrink: true }}
           />
 
-            {
+            {/* {
                 alertProps.message !== "" && 
-                <ActionAlerts 
+                <DynamicAlert 
                     success={alertProps?.success ?? false}
                     message={alertProps?.message ?? ""}
                 />
-            }
+            } */}
 
           
         </Box>

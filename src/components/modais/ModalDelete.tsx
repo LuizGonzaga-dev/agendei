@@ -8,11 +8,12 @@ type props = {
     event: EventType | undefined;
     open: boolean;
     handleDeleteEvent: (event: EventType) => Promise<void>;
+    handleClose: () => void;
 }
 
 const ModalDelete = (params: props) => {
 
-    const {open, event, handleDeleteEvent} = params;
+    const {open, event, handleDeleteEvent, handleClose} = params;
 
     if(event === undefined){
         return;
@@ -20,8 +21,7 @@ const ModalDelete = (params: props) => {
         
 
     return (
-        <Dialog open={open}>
-
+        <Dialog open={open} onClose={handleClose}>
             <DialogTitle className='font-bold'>
                 Confirme para deletar o evento abaixo!
             </DialogTitle>
@@ -71,7 +71,7 @@ const ModalDelete = (params: props) => {
                     
                     <ButtonDelete 
                         isSubmitting={false}
-                        deleteEvent={() => handleDeleteEvent(event)}
+                        deleteEvent={() => { handleDeleteEvent(event); handleClose()}}
                         event={event}
                     />
                 </DialogContentText>
