@@ -1,18 +1,29 @@
-import * as React from 'react';
-import Stack from '@mui/material/Stack';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React from 'react';
+import { Delete } from '@mui/icons-material';
+import { Button } from '@mui/material';
+import { EventType } from '@/types/EventType';
 
-type IconButtonDeleteProps = {
-    onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
-};
-
-export default function IconButtonDelete({onClick}: IconButtonDeleteProps) {
-  return (
-    <Stack direction="row" alignItems="center" spacing={1}>
-      <IconButton aria-label="delete" size="small" onClick={onClick}>
-        <DeleteIcon fontSize="inherit" />
-      </IconButton>
-    </Stack>
-  );
+type props = {
+    isSubmitting: boolean;
+    deleteEvent: (eventTodeletId: number) => void;
+    event: EventType;
 }
+
+const ButtonDelete = (params: props) => {
+
+    const {isSubmitting, deleteEvent, event} = params;
+
+    return (
+        <Button
+            onClick={() => deleteEvent(event.eventId ?? 0)}
+            variant='contained'
+            type='submit'
+            size='small'
+            endIcon={<Delete/>}
+            disabled={isSubmitting}
+            className='mt-3'
+        >deletar</Button>
+    );
+}
+
+export default ButtonDelete;

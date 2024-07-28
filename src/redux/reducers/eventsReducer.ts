@@ -1,12 +1,11 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {EventType} from '@/types/EventType'
-import { Dayjs } from 'dayjs';
 import {filterEventsByDay} from '@/helpers/Filters';
 
 interface EventsState{
     allEvents: EventType[],
     eventsInSpecificDay: EventType[],
-    selectedDay: Dayjs | null
+    selectedDay: Date | null,
 }
 
 const initialState: EventsState = {
@@ -55,8 +54,7 @@ const slice = createSlice({
             if(index !== -1){
                 state.eventsInSpecificDay[index] = action.payload;
             }
-        },
-
+        }
     }
 })
 

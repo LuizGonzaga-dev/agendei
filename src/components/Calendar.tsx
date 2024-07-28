@@ -7,38 +7,63 @@ import dayjs, { Dayjs } from 'dayjs';
 import CustomPickersDay from './CustomPickerDay';
 import ModalDialog from './Dialog';
 import { api } from '@/api/Api';
-import { jwtToken, userId } from '@/api/helpers';
 import { EventType } from '@/types/EventType';
 import DayEvents from './DayEvents';
-import { thereAreEventsOnDay, filterEventsByDay } from '@/helpers/Filters';
+import { thereAreEventsOnDay } from '@/helpers/Filters';
 import { Backdrop } from '@mui/material';
-
+import { useAppSelector } from '@/redux/hooks/useAppSelector';
+import { useDispatch } from 'react-redux';
+import * as eventsSetData  from '@/redux/reducers/eventsReducer';
+import ModalCreateEdit from './modais/ModalCreateEdit';
+import { EventsResponseType } from '@/types/EventsResponseType';
+import ModalDelete from './modais/ModalDelete';
 
 const Calendar = () => {
 
-    const [selectedDates, setSelectedDates] = useState<EventType[]>([]);
+    const userData = useAppSelector(u => u.user);
+    const eventsGetData = useAppSelector(u => u.events);
+    const dispatch = useDispatch();
+
     const [value, setValue] = useState<Dayjs | null>(dayjs());
     const [open, setOpen] = useState(false);
     const [initialDate, setInitialDate] = useState(dayjs());
     const [alertProps, setAlertProps] = useState<{success:boolean, message: string} >({success:false,message:""});
-    const [eventByDay, setEventsByDay] = useState<EventType[]>([]);
     const [showBackDrop, setShowBackDrop] = useState<boolean>(false);
 
+    const [selectedEvent, setSelectedEvent] = useState<EventType | undefined>();
+    const [showModalEdit, setShowModalEdit] = useState(false);
+    const [eventToDelete, setEventToDelete] = useState<EventType | undefined>();
+    const [showModalDeleteEvent, setShowModalDeleteEvent] = useState(false);
+     
+    // Função para abrir o modal com o evento selecionado
+    const openModalEditEvent = (event: EventType): void => {
+        debugger
+        setSelectedEvent(event);
+        setShowModalEdit(true);
+    };
+
+    const openModalDeleteEvent = (event: EventType) : void => {
+        setEventToDelete(event);
+        setShowModalDeleteEvent(true)
+    }
+
+    //quando carrega roda aqui pra carregar os eventos
     useEffect(() => {
         const fetchEvents = async () => {
             setShowBackDrop(true);
-            const events = await getEvents(userId); 
-            setSelectedDates(events);            
+            const events = await getEvents(); 
+            dispatch(eventsSetData.setAllEvents(events));
             setShowBackDrop(false);
         };
         fetchEvents();
     }, []);
 
-    const getEvents = async (id:string) : Promise<EventType[]> => {
+    //ok
+    const getEvents = async () : Promise<EventType[]> => {
         
         const response = await api.get("/Agenda/index", {
-            params: {userId: id},
-            headers: {Authorization: jwtToken},
+            params: {userId: userData.userId},
+            headers: {Authorization: userData.token},
         });
     
         let ev : EventType[] = []
@@ -64,9 +89,9 @@ const Calendar = () => {
         
         setValue(date);
         if (date) {
-        
-            if( selectedDates.length != 0 && thereAreEventsOnDay({allEvents:selectedDates, day:date})){
-                setEventsByDay(filterEventsByDay({allEvents: selectedDates, day:date}));                
+            dispatch(eventsSetData.setSelectedDay(date));
+            if( eventsGetData.allEvents.length != 0 && thereAreEventsOnDay({allEvents:eventsGetData.allEvents, day:date.toDate()})){
+                dispatch(eventsSetData.setEventsInSpecificDay());
             }else{
                 setOpen(true);
             }            
@@ -76,18 +101,46 @@ const Calendar = () => {
     //cria evento no banco
     const handleEventSubmit = async (event: EventType) => {
         // Envia o novo evento ao backend     
-        event.userId =  parseInt(userId);
+        event.userId =  parseInt(userData.userId);
         const response = await api.post("/Agenda/create", event, {
-            headers: { Authorization: jwtToken }
+            headers: { Authorization: userData.token }
         });
         
         if (response.data.success) {
             // Adicionar evento à lista de eventos
-            setSelectedDates([...selectedDates, event]);
+            dispatch(eventsSetData.insertIntoAllEvents(event));
             setAlertProps({success:true, message: response.data.message})
         }else{
             setAlertProps({success:false, message: response.data.message})
         }        
+    };
+
+    const handleEventEdit = async(event :EventType) => {
+        
+        const response = await api.put("/Agenda/edit", event,{
+            headers:{Authorization: userData.token}
+        });
+        
+        if(response.data.success){
+            eventsSetData.updateEvent(response.data.events.$values[0]);
+        }else{
+            //TODO
+        }
+    }
+
+    const handleEventDelete = async (event: EventType) => {
+        
+        const response = await api.delete("Agenda/delete", {
+        headers: { Authorization: userData.token },
+        params: { eventId: event.eventId }
+        });
+    
+        if (response.data.success) {
+            eventsSetData.removeEventById(event.eventId ?? 0);
+        } else {
+        //TODO
+        }
+        
     };
 
     return (
@@ -97,9 +150,8 @@ const Calendar = () => {
                     orientation="portrait"
                     value={value}
                     onChange={handleDateChange}
-                    
                     slots={{
-                    day: (dayProps) => <CustomPickersDay {...dayProps} selectedDays={selectedDates} />,
+                    day: (dayProps) => <CustomPickersDay {...dayProps} selectedDays={eventsGetData.allEvents} />,
                     }}
                 />            
 
@@ -111,9 +163,24 @@ const Calendar = () => {
                     alertProps={alertProps}
                     setAlertProps={setAlertProps}
                 />
+
+                <ModalCreateEdit 
+                    open={showModalEdit && selectedEvent !== null}
+                    event={selectedEvent}
+                    handleClose={() => setShowModalEdit(false)}
+                    handleEventSubmit={handleEventEdit}
+                />
+
+                <ModalDelete
+                    open = {showModalDeleteEvent && eventToDelete !== null}
+                    event={eventToDelete}
+                    handleDeleteEvent={handleEventDelete}
+                />
             </LocalizationProvider>
             <DayEvents 
-                eventsToShow={eventByDay}
+                eventsToShow={eventsGetData.eventsInSpecificDay}
+                onEdit={openModalEditEvent}
+                onDelete = {openModalDeleteEvent}
             />
             <Backdrop
                 open={showBackDrop}

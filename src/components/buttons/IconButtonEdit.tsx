@@ -10,7 +10,7 @@ type IconButtonEditProps = {
 export default function IconButtonEdit({onClick} :IconButtonEditProps) {
   return (
     <Stack direction="row" alignItems="center" spacing={1}>
-        <IconButton aria-label="delete" size="small" onClick={onClick}>
+        <IconButton aria-label="edit" size="small" onClick={onClick}>
             <EditIcon fontSize="inherit" />
         </IconButton>
     </Stack>    

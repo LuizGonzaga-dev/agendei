@@ -1,13 +1,11 @@
 import React from 'react';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
-import { IconButton, Badge } from '@mui/material';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Badge } from '@mui/material';
 import { Dayjs } from 'dayjs';
 import { EventType } from '@/types/EventType';
 
 interface CustomPickersDayProps extends PickersDayProps<Dayjs> {
   selectedDays: EventType[];
-  //notifications: Record<string, number>;
 }
 
 const CustomPickersDay = (props: CustomPickersDayProps) => {
