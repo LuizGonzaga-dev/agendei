@@ -44,7 +44,7 @@ const slice = createSlice({
             state.eventsInSpecificDay = state.allEvents.filter(e => e.eventId !== action.payload);
         },
         updateEvent: (state, action: PayloadAction<EventType>) => {
-            debugger
+            
             let index = state.allEvents.findIndex(e => e.eventId == action.payload.eventId);
             if(index !== -1){
                 state.allEvents[index] = action.payload;

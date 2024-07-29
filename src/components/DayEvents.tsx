@@ -1,36 +1,42 @@
 import {EventType} from "@/types/EventType"
 import Card from "./Card";
 import { DD_MM_YYYY } from "@/helpers/DataHoraToString";
+import { Fab } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import {CardType} from '@/types/CardType'
+import List from "./List";
 
-type props = {
-    eventsToShow: EventType[];
-    onEdit: (event: EventType) => void;
-    onDelete: (event: EventType) => void;
-}
+const DayEvents = (params: CardType) => {
 
-const DayEvents = (params: props) => {
-
-    const {eventsToShow, onEdit, onDelete} = params;
+    const {eventsToShow, onEdit, onDelete, onCreate} = params;
 
     return (
-        <div className="flex flex-col py-12 ">
-            <div className="css-3jvy96-MuiTypography-root-MuiDatePickerToolbar-title">Eventos do dia</div>
-            {
-                eventsToShow.length == 0 &&
-                <div className="flex flex-1 items-center css-dplwbx-MuiPickersCalendarHeader-label">Click em um dia que tenha eventos para listá-los</div>
-            }
+        <div id="day-events-container" className="content">
             
-            {
-                eventsToShow.length > 0 &&
-                eventsToShow.map((e) => 
-                    <Card 
-                        key={e.eventId}
-                        event={e}
-                        onEdit={onEdit}
-                        onDelete={onDelete}
-                    />
-                )
-            }
+                <div className=" elemento flex">
+                    <div className="text-xl text-center flex-1">Eventos do dia</div>
+                    <Fab sx={{cursor:'pointer'}} onClick={onCreate} size="small" color="primary" aria-label="add">
+                        <Add/>
+                    </Fab>
+                </div>
+                {
+                    eventsToShow.length == 0 &&
+                    <div className="text-center text-sm elemento">Click em um dia que tenha eventos para listá-los ou click em um dia sem eventos para adicionar.</div>
+                }
+
+                {eventsToShow.length > 0 && (
+                    <div className="elemento card-list-container" >
+                        {eventsToShow.map(e => (
+                            <Card 
+                                key={e.eventId}
+                                event={e}
+                                onEdit={onEdit}
+                                onDelete={onDelete}
+                            />
+                        ))}
+                    </div>
+                )}
+            
         </div>
     );
 }

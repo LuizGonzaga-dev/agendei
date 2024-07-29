@@ -22,7 +22,7 @@ const eventTypeFormSchema = z.object({
     description: z.string().max(25, "Máximo 25 caracteres").optional(),
     start: z.date({required_error:"Obrigatório!"}),
     end: z.date({required_error: "Obrigatório!"}),
-    eventId: z.number()
+    eventId: z.number().optional()
 });
 
 const ModalCreateEdit = (params: props) => {
@@ -31,7 +31,6 @@ const ModalCreateEdit = (params: props) => {
     let {event} = params;
 
     if (open.create) {
-        debugger
         event = {
             title: '',
             description: '',
@@ -39,7 +38,6 @@ const ModalCreateEdit = (params: props) => {
             end: dayjs().add(1, 'hour').toDate(),
         };
     }else{
-        debugger
     }
 
     const {
@@ -53,7 +51,11 @@ const ModalCreateEdit = (params: props) => {
     });
 
     const onSubmit: SubmitHandler<EventType> = async (data) => {
-        const result = await handleEventSubmit(data);        
+        const result = await handleEventSubmit(data);    
+        if(result.success){
+        }else{
+            debugger
+        }
         handleClose();
     };
 
@@ -74,11 +76,11 @@ const ModalCreateEdit = (params: props) => {
             open={open.open}
             onClose={handleClose}
         >
-            <DialogTitle className='font-bold'>
+            <DialogTitle className='font-bold bg-moderate-gray text-moderate-white'>
                 {open.create ? "Criar " : "Editar "}evento!
             </DialogTitle>
-            <Divider variant='fullWidth'/>
-            <DialogContent>
+            <Divider className='bg-intense-blue' variant='fullWidth'/>
+            <DialogContent className='bg-moderate-gray'>
                 <form onSubmit={handleSubmit(onSubmit)} className='gap-2'>
                     <Controller
                         name='title'
@@ -86,7 +88,7 @@ const ModalCreateEdit = (params: props) => {
                         render={({field}) => 
                             <TextField   
                                 {...field}  
-                                label="Título"
+                                label="Título"                                
                                 error={!!errors.title}
                                 variant="standard"
                                 helperText={errors.title ? errors.title.message : ''} 
@@ -153,7 +155,7 @@ const ModalCreateEdit = (params: props) => {
                                     error={!!errors.eventId}
                                     variant="standard"
                                     helperText={errors.eventId ? errors.eventId.message : ''} 
-                                    fullWidth                   
+                                    fullWidth                  
                                 />
                             }
                         /> 

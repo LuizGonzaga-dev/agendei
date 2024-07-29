@@ -18,6 +18,7 @@ import ModalCreateEdit from './modais/ModalCreateEdit';
 import ModalDelete from './modais/ModalDelete';
 import MySnackbar from './Snackbar';
 import { EventResponseViewModel } from '@/Interfaces/ResponseAgendaController';
+import 'dayjs/locale/pt-br';
 
 const Calendar = () => {
 
@@ -40,9 +41,16 @@ const Calendar = () => {
      
     // Função para abrir o modal com o evento selecionado
     const openModalEditEvent = (event: EventType): void => {
+        alert("oi")
         setSelectedEvent(event);
         setShowModalCreateEdit({...showModalCreateEdit, open:true, create: false});
     };
+
+    const openModalCreateEvent = () : void => {
+        alert("oi")
+        setSelectedEvent(undefined);
+        setShowModalCreateEdit({...showModalCreateEdit, create:true, open:true})
+    }
 
     const openModalDeleteEvent = (event: EventType) : void => {
         setEventToDelete(event);
@@ -137,7 +145,6 @@ const Calendar = () => {
         setShowBackDrop(false);
 
         if(response.success){
-            debugger
             dispatch(eventsSetData.updateEvent(response.events.$values[0]));
             setSnackbarUpdate({open:true, success: true, message: response.message});
         }else{
@@ -167,20 +174,28 @@ const Calendar = () => {
 
     return (
         <>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <StaticDatePicker 
-                    orientation="portrait"
-                    value={value}
-                    onChange={handleDateChange}
-                    slots={{
-                    day: (dayProps) => <CustomPickersDay {...dayProps} selectedDays={eventsGetData.allEvents} />,
-                    }}
-            />   </LocalizationProvider>
+            <div className='content'>
+                <div className='elemento-center'>
+                    <LocalizationProvider  dateAdapter={AdapterDayjs} adapterLocale='pt-br'>
+                        <StaticDatePicker 
+                            orientation="portrait"
+                            value={value}
+                            onChange={handleDateChange}                        
+                            slots={{
+                            day: (dayProps) => <CustomPickersDay {...dayProps} selectedDays={eventsGetData.allEvents} />,              
+                            }}
+                    />   </LocalizationProvider>
+                </div>
+            </div>
+            
             <DayEvents 
                 eventsToShow={eventsGetData.eventsInSpecificDay}
                 onEdit={openModalEditEvent}
-                onDelete = {openModalDeleteEvent}
+                onDelete = {openModalDeleteEvent}    
+                onCreate={openModalCreateEvent}         
             />
+            
+            
             <Backdrop            
                 open={showBackDrop}
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -191,16 +206,6 @@ const Calendar = () => {
                 snackBarUpdate={snackbarUpdate}
                 handleClose={() => setSnackbarUpdate({...snackbarUpdate, open: false})}
             />
-
-            {/* Modais */}
-            {/* <ModalDialog
-                open={open}
-                handleClose={() => setOpen(false)}
-                handleEventSubmit={handleEventSubmit}
-                initialDate={initialDate}
-                alertProps={alertProps}
-                setAlertProps={setAlertProps}
-            /> */}
 
             <ModalCreateEdit 
                 open={showModalCreateEdit}

@@ -11,7 +11,7 @@ export default function IconButtonEdit({onClick} :IconButtonEditProps) {
   return (
     <Stack direction="row" alignItems="center" spacing={1}>
         <IconButton aria-label="edit" size="small" onClick={onClick}>
-            <EditIcon fontSize="inherit" />
+            <EditIcon sx={{color:'#1565c0'}} fontSize="inherit" />
         </IconButton>
     </Stack>    
   );

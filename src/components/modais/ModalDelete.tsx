@@ -22,50 +22,50 @@ const ModalDelete = (params: props) => {
 
     return (
         <Dialog open={open} onClose={handleClose}>
-            <DialogTitle className='font-bold'>
+            <DialogTitle className='font-bold bg-moderate-gray text-moderate-white'>
                 Confirme para deletar o evento abaixo!
             </DialogTitle>
-            <Divider variant='fullWidth'/>
-            <DialogContent>
+            <Divider className='bg-intense-blue' variant='fullWidth'/>
+            <DialogContent className='bg-moderate-gray'>
                 <DialogContentText>
                     <Box sx={{ 
                         paddingTop: '16.5px', 
                         paddingBottom: '8px', 
-                        borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
+                        borderBottom: '1px solid #E9F2DD',
                         '& .MuiTypography-root': { fontFamily: 'inherit', fontSize: 'inherit' }
                     }}>
-                        <Typography className='mb-2' variant="body2">Título:</Typography>
-                        <Typography className='font-bold' variant="body1">{event.title}</Typography>
+                        <Typography className='mb-2 text-moderate-white' variant="body2">Título:</Typography>
+                        <Typography className='font-bold text-moderate-white' variant="body1">{event.title}</Typography>
                     </Box>
                     <Box sx={{ 
                         paddingTop: '16.5px', 
                         paddingBottom: '8px', 
-                        borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
+                        borderBottom: '1px solid #E9F2DD',
                         '& .MuiTypography-root': { fontFamily: 'inherit', fontSize: 'inherit' }
                     }}>
-                        <Typography className='mb-2' variant="body2">Descrição:</Typography>
-                        <Typography className='font-bold' variant="body1">{event.description}</Typography>
+                        <Typography className='mb-2 text-moderate-white' variant="body2">Descrição:</Typography>
+                        <Typography className='font-bold text-moderate-white' variant="body1">{event.description}</Typography>
                     </Box>
                     <span className='flex flex-row gap-4'>
                         <Box sx={{ 
                             flex:'1',
                             paddingTop: '16.5px', 
                             paddingBottom: '8px', 
-                            borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
+                            borderBottom: '1px solid #E9F2DD',
                             '& .MuiTypography-root': { fontFamily: 'inherit', fontSize: 'inherit' }
                         }}>
-                            <Typography className='mb-2' variant="body2">Início:</Typography>
-                            <Typography className='font-bold' variant="body1">{format(event.start, "dd/MM/yyyy HH:mm")}</Typography>
+                            <Typography className='mb-2 text-moderate-white' variant="body2">Início:</Typography>
+                            <Typography className='font-bold text-moderate-white' variant="body1">{format(event.start, "dd/MM/yyyy HH:mm")}</Typography>
                         </Box>
                         <Box sx={{ 
                             flex:'1',
                             paddingTop: '16.5px', 
                             paddingBottom: '8px', 
-                            borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
+                            borderBottom: '1px solid #E9F2DD',
                             '& .MuiTypography-root': { fontFamily: 'inherit', fontSize: 'inherit' }
                         }}>
-                            <Typography className='mb-2' variant="body2">Fim:</Typography>
-                            <Typography className='font-bold' variant="body1">{format(event.end, "dd/MM/yyyy HH:mm")}</Typography>
+                            <Typography className='mb-2 text-moderate-white' variant="body2">Fim:</Typography>
+                            <Typography className='font-bold text-moderate-white' variant="body1">{format(event.end, "dd/MM/yyyy HH:mm")}</Typography>
                         </Box>
                     </span>
                     

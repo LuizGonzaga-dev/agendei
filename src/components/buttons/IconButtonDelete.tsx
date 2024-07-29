@@ -11,7 +11,7 @@ export default function IconButtonDelete({onClick}: IconButtonDeleteProps) {
   return (
     <Stack direction="row" alignItems="center" spacing={1}>
       <IconButton aria-label="delete" size="small" onClick={onClick}>
-        <DeleteIcon fontSize="inherit" />
+        <DeleteIcon sx={{color:'#1565c0'}} fontSize="inherit" />
       </IconButton>
     </Stack>
   );
