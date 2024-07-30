@@ -33,7 +33,7 @@ const Card = (params: props) => {
                 
             </div>
             <hr className='bg-blue-500 '/>
-            <div className='flex-1 px-2 py-2 card-text text-md'>{event.description ?? "Sem descrição."}</div>
+            <div className='flex-1 px-2 py-2 card-text text-md text-moderate-white'>{(event.description === '' || event.description === undefined ) ? "Sem descrição." : event.description}</div>
         </div>
     );
 }

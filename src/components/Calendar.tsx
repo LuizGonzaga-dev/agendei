@@ -5,7 +5,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import CustomPickersDay from './CustomPickerDay';
-import ModalDialog from './Dialog';
 import { api } from '@/api/Api';
 import { EventType } from '@/types/EventType';
 import DayEvents from './DayEvents';
@@ -27,9 +26,6 @@ const Calendar = () => {
     const dispatch = useDispatch();
 
     const [value, setValue] = useState<Dayjs | null>(dayjs());
-    const [open, setOpen] = useState(false);
-    const [initialDate, setInitialDate] = useState(dayjs());
-    const [alertProps, setAlertProps] = useState<{success:boolean, message: string} >({success:false,message:""});
     const [showBackDrop, setShowBackDrop] = useState<boolean>(false);
 
     const [selectedEvent, setSelectedEvent] = useState<EventType | undefined>();
@@ -37,18 +33,16 @@ const Calendar = () => {
     const [eventToDelete, setEventToDelete] = useState<EventType | undefined>();
     const [showModalDeleteEvent, setShowModalDeleteEvent] = useState(false);
 
-    const [snackbarUpdate, setSnackbarUpdate] = useState({message: '', success: false, open: false})
+    const [snackbarUpdate, setSnackbarUpdate] = useState({message: '', success: false, open: false});
      
     // Função para abrir o modal com o evento selecionado
     const openModalEditEvent = (event: EventType): void => {
-        alert("oi")
         setSelectedEvent(event);
         setShowModalCreateEdit({...showModalCreateEdit, open:true, create: false});
     };
 
-    const openModalCreateEvent = () : void => {
-        alert("oi")
-        setSelectedEvent(undefined);
+    const openModalCreateEvent = (clickedDay: Dayjs) : void => {
+        setSelectedEvent({title:'', start:clickedDay.toDate(), end: clickedDay.add(1,'hour').toDate(), eventId:0, description:''});
         setShowModalCreateEdit({...showModalCreateEdit, create:true, open:true})
     }
 
@@ -68,11 +62,6 @@ const Calendar = () => {
         fetchEvents();
     }, []);
 
-    // useEffect(() => {
-    //     console.log("mudou")
-    // },[eventsGetData.allEvents])
-
-    //ok
     const getEvents = async () : Promise<EventType[]> => {
         
         const response = await api.get("/Agenda/index", {
@@ -102,21 +91,19 @@ const Calendar = () => {
     const handleDateChange = (date: Dayjs | null) => {
         setValue(date);
         if (date) {
-            // dispatch(eventsSetData.setSelectedDay(date));
             if( eventsGetData.allEvents.length != 0 && thereAreEventsOnDay({allEvents:eventsGetData.allEvents, day:date.toDate()})){
-                dispatch(eventsSetData.setSelectedDay(date));
-                dispatch(eventsSetData.setEventsInSpecificDay());
+                dispatch(eventsSetData.filterByDate(date.toDate()));
 
             }else{
                 //setOpen(true);
-                setShowModalCreateEdit({...showModalCreateEdit, open:true, create: true});
+                openModalCreateEvent(date);
+                // setShowModalCreateEdit({...showModalCreateEdit, open:true, create: true});
             }            
         }
     };
 
     //cria evento no banco
     const handleEventSubmit = async (event: EventType) => {
-        alert("criar")
         // Envia o novo evento ao backend     
         event.userId =  parseInt(userData.userId);
         const response = await api.post<Promise<EventResponseViewModel>>("/Agenda/create", event, {
@@ -124,18 +111,18 @@ const Calendar = () => {
         }).then(r => r.data);
         
         if (response.success) {
-            // Adicionar evento à lista de eventos
-            dispatch(eventsSetData.insertIntoAllEvents(event));
-            setAlertProps({success:true, message: response.message})
+            dispatch(eventsSetData.insertIntoAllEvents(response.events.$values[0]));
+            dispatch(eventsSetData.filterByDate(event.start));//atualiza lista
+            setSnackbarUpdate({open:true, success: true, message: response.message});
         }else{
-            setAlertProps({success:false, message: response.message})
+            setSnackbarUpdate({open: true, success: false, message: response.message});
         }        
-
+        
         return response;
     };
 
     const handleEventEdit = async (event :EventType) =>  {
-        alert("editar")
+
         setShowBackDrop(true);
 
         const response = await api.put<Promise<EventResponseViewModel>>("/Agenda/edit", event,{
@@ -148,7 +135,7 @@ const Calendar = () => {
             dispatch(eventsSetData.updateEvent(response.events.$values[0]));
             setSnackbarUpdate({open:true, success: true, message: response.message});
         }else{
-            setSnackbarUpdate({open: true, success: false, message: response.message})
+            setSnackbarUpdate({open: true, success: false, message: response.message});
         }
 
         return response;
@@ -165,6 +152,7 @@ const Calendar = () => {
 
         if (response.success) {
             dispatch(eventsSetData.removeEventById(event.eventId ?? 0));
+            dispatch(eventsSetData.filterByDate(event.start))
             setSnackbarUpdate({success: true, open: true, message:response.message});
         } else {
             setSnackbarUpdate({open: true, message: response.message, success: false});
@@ -202,6 +190,7 @@ const Calendar = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
+
             <MySnackbar
                 snackBarUpdate={snackbarUpdate}
                 handleClose={() => setSnackbarUpdate({...snackbarUpdate, open: false})}
@@ -211,7 +200,6 @@ const Calendar = () => {
                 open={showModalCreateEdit}
                 event={selectedEvent}
                 handleClose={() => setShowModalCreateEdit({...showModalCreateEdit, open:false, create: false})}
-                // handleEventSubmit={handleEventEdit}
                 handleEventSubmit={showModalCreateEdit.create ? handleEventSubmit: handleEventEdit}
             />
 

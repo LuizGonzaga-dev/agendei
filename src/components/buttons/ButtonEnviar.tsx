@@ -12,6 +12,7 @@ const ButtonEnviar = (params: props) => {
 
     return (
         <Button
+            sx={{marginRight:'10px'}}
             variant='contained'
             type='submit'
             size='small'

@@ -1,21 +1,19 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {EventType} from '@/types/EventType'
-import {filterEventsByDay} from '@/helpers/Filters';
+import dayjs from 'dayjs';
 
 interface EventsState{
     allEvents: EventType[],
-    eventsInSpecificDay: EventType[],
-    selectedDay: Date | null,
+    eventsInSpecificDay: EventType[]
 }
 
 const initialState: EventsState = {
     allEvents:[],
-    eventsInSpecificDay:[],
-    selectedDay: null
+    eventsInSpecificDay:[]
 }
 
 const slice = createSlice({
-    name: 'events',
+    name: 'newEvents',
     initialState,
     reducers:{
         //allEvents actions
@@ -24,27 +22,13 @@ const slice = createSlice({
         },
         insertIntoAllEvents: (state, action: PayloadAction<EventType>) => {
             state.allEvents.push(action.payload);
-        },
-        //eventsInSpecificDay actions
-        setEventsInSpecificDay: ( state ) => {
-            if(state.selectedDay){
-                state.eventsInSpecificDay = filterEventsByDay({
-                    allEvents: state.allEvents, 
-                    day: state.selectedDay
-                });
-            }
-        },        
-        //selectedDay actions
-        setSelectedDay: (state, action) => {
-            state.selectedDay = action.payload;
-        },
+        },  
         //allEvents and eventsInSpecificDay actions
         removeEventById: (state, action: PayloadAction<number>) => {
             state.allEvents = state.allEvents.filter(e => e.eventId !== action.payload);
             state.eventsInSpecificDay = state.allEvents.filter(e => e.eventId !== action.payload);
         },
-        updateEvent: (state, action: PayloadAction<EventType>) => {
-            
+        updateEvent: (state, action: PayloadAction<EventType>) => {            
             let index = state.allEvents.findIndex(e => e.eventId == action.payload.eventId);
             if(index !== -1){
                 state.allEvents[index] = action.payload;
@@ -54,12 +38,16 @@ const slice = createSlice({
             if(index !== -1){
                 state.eventsInSpecificDay[index] = action.payload;
             }
-        }
+        },
+        filterByDate: (state, action: PayloadAction<Date>) => {
+            const djs = dayjs(action.payload);
+            state.eventsInSpecificDay = state.allEvents.filter(e => djs.isSame(dayjs(e.start), 'day'));
+        },
     }
 })
 
 export const {
-    insertIntoAllEvents, removeEventById, setAllEvents, setEventsInSpecificDay, setSelectedDay, updateEvent
+    insertIntoAllEvents, removeEventById, setAllEvents, updateEvent, filterByDate
 } = slice.actions;
 
 export default slice.reducer;

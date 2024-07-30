@@ -11,10 +11,10 @@ const ButtonCancelar = (params: props) => {
     return (
         <Button
             variant='contained'
-            type='submit'
             size='small'
             endIcon={<Cancel/>}
             className='mt-3'
+            sx={{marginRight:'10px'}}
         >cancelar</Button>
     );
 }

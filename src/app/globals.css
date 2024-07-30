@@ -33,7 +33,7 @@
 
 .card-list-container::-webkit-scrollbar-thumb {
   background: #9c27b0; 
-  border-radius: 99px; 
+  border-radius: 30px; 
   cursor: pointer; 
 }
 
@@ -126,12 +126,11 @@ html, body {
 
 .card-list-container::-webkit-scrollbar {
   height: 3px;
-  background-color: #121212;
+  background-color: var(--intense-gray);
 }
 
 .card-list-container::-webkit-scrollbar-thumb {
-  background: #FFA17F;
-  border: 0px none #ffffff;
+  background: var(--moderate-violeta);
   border-radius: 99px;
   cursor: pointer;
 }
@@ -153,6 +152,8 @@ html, body {
   .card-list-container{
     flex-direction: column;
     overflow-y: scroll;
+    padding-bottom: 10px;
+    max-height: 340px;
   }
 }
 

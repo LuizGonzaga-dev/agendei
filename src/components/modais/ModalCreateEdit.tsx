@@ -30,15 +30,6 @@ const ModalCreateEdit = (params: props) => {
     const {open, handleClose, handleEventSubmit} = params;
     let {event} = params;
 
-    if (open.create) {
-        event = {
-            title: '',
-            description: '',
-            start: dayjs().toDate(),
-            end: dayjs().add(1, 'hour').toDate(),
-        };
-    }else{
-    }
 
     const {
         handleSubmit, 
@@ -53,8 +44,7 @@ const ModalCreateEdit = (params: props) => {
     const onSubmit: SubmitHandler<EventType> = async (data) => {
         const result = await handleEventSubmit(data);    
         if(result.success){
-        }else{
-            debugger
+        }else{         
         }
         handleClose();
     };
@@ -166,7 +156,7 @@ const ModalCreateEdit = (params: props) => {
                         success={open?.success ?? false}
                         message={open?.message ?? ""}
                     />
-
+                    
                     <ButtonEnviar isSubmitting={isSubmitting}/>
                 </form>
             </DialogContent>
