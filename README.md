@@ -14,6 +14,20 @@ pnpm dev
 bun dev
 ```
 
+<h2>Galeria de Imagens Tela Grande</h2>
+<div style="display: flex; overflow-x: auto; white-space: nowrap;">
+  <img src="public/principal.png" alt="Imagem 1" style="margin-right: 10px; height: 350px; object-fit: cover;">
+  <img src="public/web_selecionado.png" alt="Imagem 2" style="margin-right: 10px; height: 350px; object-fit: cover;">
+  <img src="public/modal.png" alt="Imagem 3" style="margin-right: 10px; height: 350px; object-fit: cover;">
+</div>
+
+<h2>Galeria de Imagens Tela Pequena</h2>
+<div style="display: flex; overflow-x: auto; white-space: nowrap;">
+    <img src="public/principal_tela_peq.png" alt="Imagem 4" style="margin-right: 10px; height: 350px; object-fit: cover;">
+    <img src="public/app_selecionado.png" alt="Imagem 5" style="margin-right: 10px; height:  350px; object-fit: cover;">
+    <img src="public/modal_tela_peq.png" alt="Imagem 6" style="margin-right: 10px; height: 350px; object-fit: cover;">
+</div>
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
