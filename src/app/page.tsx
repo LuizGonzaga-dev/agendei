@@ -1,20 +1,38 @@
 "use client"
 
-import * as React from 'react';
-import Calendar from '@/components/Calendar';
-
-import {Provider} from 'react-redux';
-import { store } from '@/redux/store';
+import React, {useEffect} from 'react';
+import { Backdrop, CircularProgress } from '@mui/material';
+import { useAppSelector } from '@/redux/hooks/useAppSelector';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+
+  const isLoading = useAppSelector(l => l.loading);
+  const useUserData = useAppSelector(u => u.user);
+  // debugger
+  const router = useRouter(); 
+  
+  const hasToken = useUserData.token !== '';
+  
+  useEffect(() => {
+    if (hasToken) {
+      router.push('/calendar');
+    } else {
+      router.push('/signIn');
+    }
+  }, [hasToken, router]);
+
   return (
-    <React.StrictMode>
-      <Provider store={store}>
-      <div id='calendar-container' className='text-moderate-white container bg-intense-gray flex-col'>
-        <Calendar/>
-      </div>
-      </Provider>
-    </React.StrictMode>
-    
+        <div id='calendar-container' className='text-moderate-white container bg-intense-gray flex-col'>
+
+          <Backdrop            
+            open={isLoading}
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          >
+
+          <CircularProgress color="inherit" />
+          
+          </Backdrop>
+        </div> 
   );
 }

@@ -1,4 +1,5 @@
-import React, {useEffect} from  'react'
+"use client"
+import React, {use, useEffect} from  'react'
 import { Dialog, DialogContent, DialogTitle, Divider, Box} from '@mui/material';
 import { EventType } from '@/types/EventType';
 import { useForm, SubmitHandler, Controller} from "react-hook-form";

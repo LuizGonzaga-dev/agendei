@@ -1,3 +1,4 @@
+"use client"
 import { EventType } from '@/types/EventType';
 import React from  'react'
 import { Box, Dialog, DialogContent, DialogContentText, DialogTitle, Divider, Typography} from '@mui/material';

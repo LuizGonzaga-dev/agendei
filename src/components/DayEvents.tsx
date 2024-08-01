@@ -1,3 +1,4 @@
+"use client"
 import {EventType} from "@/types/EventType"
 import Card from "./Card";
 import { DD_MM_YYYY } from "@/helpers/DataHoraToString";

@@ -37,6 +37,12 @@
   cursor: pointer; 
 }
 
+html{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -44,6 +50,7 @@ html, body {
   height: 100vh;
   overflow: hidden; 
   box-sizing: border-box;
+  color: var(--moderate-white);
 }
 
 .container {
@@ -155,6 +162,12 @@ html, body {
     padding-bottom: 10px;
     max-height: 340px;
   }
+  .container {
+    flex-direction: row;
+  }
+  body{
+    justify-content: center;
+  }
 }
 
 /* inputs */
@@ -224,4 +237,17 @@ html, body {
 
 .css-23p0if-MuiButtonBase-root-MuiPickersDay-root:not(.Mui-selected){
   border-color:violet;
+}
+
+/* css tela login */
+.image-login{
+  object-fit: cover;
+  width: 200px;
+}
+
+.img-form-container{
+  flex-direction: column;
+  height: fit-content;
+  background-color: var(--moderate-gray);
+  border-radius: 15px;
 }

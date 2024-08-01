@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import { Cancel } from '@mui/icons-material';
 import { Button } from '@mui/material';
