@@ -2,10 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const LoadingBackDrop = createSlice({
     name: 'loading',
-    initialState: false,
+    initialState: {
+        show: false
+    },
     reducers:{
-        showLoadingBackDrop: (state) => true,
-        hideLoadingBackDrop: (state) => false,
+        showLoadingBackDrop: (state) => { state.show = true },
+        hideLoadingBackDrop: (state) => { state.show = false },
     },
 });
 

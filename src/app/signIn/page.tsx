@@ -13,9 +13,9 @@ import { useDispatch } from 'react-redux';
 import * as userSetData from '@/redux/reducers/useReducer';
 import * as eventsSetData from '@/redux/reducers/eventsReducer';
 import * as useShowLoading from '@/redux/reducers/useLoading';
-import SingUp from '../signUp/page';
 import { useRouter } from 'next/navigation';
 import { MapEventsFromApi } from '@/helpers/EventsHelper';
+import { useAppSelector } from '@/redux/hooks/useAppSelector';
 
 const passwordSchema = z.string()
   .min(8, 'A senha deve ter pelo menos 8 caracteres')
@@ -37,6 +37,8 @@ const  SingIn = () => {
     const dispatch = useDispatch();
     const router = useRouter();
 
+    const useLoading = useAppSelector(e => e.loading);
+
     const [showSnackbar, setShowSnackbar] = useState({message: '', success: false, open: false});
 
     const { handleSubmit, control,  formState: {errors, isSubmitting, isSubmitSuccessful} } = useForm<UserLoginType>({
@@ -52,10 +54,11 @@ const  SingIn = () => {
     const onSubmit : SubmitHandler<UserLoginType> = async (data) => {
         try{
             dispatch(useShowLoading.showLoadingBackDrop());
-            const result = await handleCreateUser(data);    
-            // debugger
+            const result = await handleCreateUser(data);   
+            dispatch(useShowLoading.hideLoadingBackDrop()); 
+            
             if(result.success){
-                // debugger
+                
                 //set token info
                 dispatch(userSetData.setToken(result.tokenInfo?.token));
                 dispatch(userSetData.setValidTo(result.tokenInfo?.validTo));
@@ -65,11 +68,10 @@ const  SingIn = () => {
                 dispatch(eventsSetData.setAllEvents(mappedEvents));
                 router.push('/calendar')
             }else{       
-                dispatch(useShowLoading.hideLoadingBackDrop());
                 setShowSnackbar({success:false, open:true, message: result.message})  
             }
         }catch(error){
-            // debugger
+            
             dispatch(useShowLoading.hideLoadingBackDrop());
             setShowSnackbar({success:false, open:true, message:'Ocorreu um erro desconhecido!'})
         }

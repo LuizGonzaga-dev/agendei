@@ -66,6 +66,7 @@ const ModalCreateEdit = (params: props) => {
         <Dialog 
             open={open.open}
             onClose={handleClose}
+            aria-hidden={false}
         >
             <DialogTitle className='font-bold bg-moderate-gray text-moderate-white'>
                 {open.create ? "Criar " : "Editar "}evento!

@@ -54,9 +54,8 @@ const  SingUp = () => {
         try{
             dispatch(useShowLoading.showLoadingBackDrop());
             const result = await handleCreateUser(data);    
-            // debugger
+            
             if(result.success){
-                // debugger
                 //seta as informações do token
                 dispatch(userSetData.setToken(result.tokenInfo?.token));
                 dispatch(userSetData.setValidTo(result.tokenInfo?.validTo));
