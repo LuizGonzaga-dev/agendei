@@ -9,7 +9,6 @@ export default function Home() {
 
   const loading = useAppSelector(l => l.loading);
   const useUserData = useAppSelector(u => u.user);
-  // debugger
   const router = useRouter(); 
   
   const hasToken = useUserData.token !== '';
@@ -26,12 +25,14 @@ export default function Home() {
     <>
       <div id='calendar-container' className='text-moderate-white container bg-intense-gray flex-col'>
       </div> 
+      
       <Backdrop            
         open={loading.show}
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
+
     </>
   );
 }

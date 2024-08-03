@@ -54,7 +54,7 @@ const  SingIn = () => {
     const onSubmit : SubmitHandler<UserLoginType> = async (data) => {
         try{
             dispatch(useShowLoading.showLoadingBackDrop());
-            const result = await handleCreateUser(data);   
+            const result = await handleCreateUser(data);  
             dispatch(useShowLoading.hideLoadingBackDrop()); 
             
             if(result.success){
