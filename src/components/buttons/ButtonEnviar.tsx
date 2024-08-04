@@ -7,9 +7,9 @@ type props = {
     isSubmitting : boolean;
 }
 
-const ButtonEnviar = (params: props) => {
+const ButtonEnviar = () => {
 
-    const {isSubmitting} = params;
+    //const {isSubmitting} = params;
 
     return (
         <Button

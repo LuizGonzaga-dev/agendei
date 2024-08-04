@@ -35,7 +35,7 @@ const ModalCreateEdit = (params: props) => {
     const {
         handleSubmit, 
         control,
-        formState: {errors, isSubmitting, isSubmitSuccessful},
+        formState: {errors},
         reset
     } = useForm<EventType>({
         resolver: zodResolver(eventTypeFormSchema),
@@ -159,7 +159,7 @@ const ModalCreateEdit = (params: props) => {
                         message={open?.message ?? ""}
                     />
                     
-                    <ButtonEnviar isSubmitting={isSubmitting}/>
+                    <ButtonEnviar/>
                 </form>
             </DialogContent>
         </Dialog>
